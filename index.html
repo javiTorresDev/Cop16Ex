@@ -1,14 +1,14 @@
 <html translate="no" lang="en">
 
 <head>
-    <title>ESAP COP16</title>
+    <title>CIMENTO MEDIA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image.prod.js"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
-    <link rel="icon" href="./assets/img/icons/favicon.png" type="image/x-icon">
+    <link rel="icon" href="./assets/img/icons/favicon.ico" sizes="any">
     <link rel="stylesheet" href="styles.css">
     <script src="./js/utils.js"></script>
     <script src="main.js"></script>
@@ -18,12 +18,12 @@
 
     <div class="intro-screen">
         <div class="intro-screen__wrap">
-            <div class="logo">
+            <!-- <div class="logo">
                 <img src="./assets/esap-cop.png" alt="ESAP COP">
             </div>
             <div class="bird-image">
                 <img src="./assets/img/bird.png" alt="Bird">
-            </div>
+            </div> -->
             <div class="loader-wrap" style="display: flex; flex-direction: column; gap: 10px;">
                 <div class="loading__state">
                     <div class="loader"></div>
@@ -34,7 +34,7 @@
                     Inicia la experiencia
                 </div>
 
-                <div class="version-text">1.2.24</div>
+                <div class="version-text">1.0.0</div>
             </div>
         </div>
     </div>
@@ -42,15 +42,15 @@
     <a-scene mindar-image="imageTargetSrc: ./assets/mind/targets.mind; filterMinCF:0.0001; filterBeta: 0.001"
         color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false">
-        <a-assets>
+        <!-- <a-assets>
             <audio id="ambient_sound" src="./assets/audio/audio.mp3" preload="auto"></audio>
-        </a-assets>
+        </a-assets> -->
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
         <a-entity id="entity_ambient" sound="src: #ambient_sound; loop: true"></a-entity>
 
         <a-entity id="image_target" mindar-image-target="targetIndex: 0">
-            <a-entity gltf-model="./model/Esap_animacion.glb" scale="0.7 0.7 0.7" position="0.3.5 -0.6 0"
+            <a-entity gltf-model="./model/AN002.glb" scale="1 1 1" position="0 -0.5 0"
                 animation-mixer="clip: *;loop: repeat;"></a-entity>
         </a-entity>
     </a-scene>
