@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const introScreen = document.querySelector('.intro-screen');
     const loadingState = document.querySelector('.loading__state');
     const startButton = document.querySelector('#start-button');
-    const ambient = document.querySelector('#entity_ambient');
+    // const ambient = document.querySelector('#entity_ambient');
     const imageTarget = document.querySelector('#image_target');
 
     sceneEl.addEventListener("arReady", (event) => {
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function start() {
         introScreen.classList.add('fadeout');
-        ambient.components.sound.playSound();
     }
 
     // imageTarget.addEventListener("targetFound", event => initVoiceAudio());
@@ -24,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * Voice audio logic
      */
+    /*
     let audioContext, voiceBuffer, voiceSource, voiceGain, voiceLoaded = false, voiceLoading = false;
 
     async function loadAudio(url) {
@@ -69,6 +69,6 @@ document.addEventListener('DOMContentLoaded', function () {
         await initAudio();
         startVoiceAudio();
         voiceLoaded = true;
-    }
+    }*/
 
 })

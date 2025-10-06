@@ -1,60 +1,553 @@
-<html translate="no" lang="en">
-
+<!DOCTYPE html>
+<html translate="no" lang="es">
 <head>
-    <title>CIMENTO MEDIA</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image.prod.js"></script>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image-aframe.prod.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Experiencia de Realidad Aumentada - CIMENTO MEDIA">
+    <title>CIMENTO MEDIA - Experiencia AR</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- AR Libraries - Versiones actualizadas -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
+
+    <!-- Favicon -->
     <link rel="icon" href="./assets/img/icons/favicon.ico" sizes="any">
-    <link rel="stylesheet" href="styles.css">
-    <script src="./js/utils.js"></script>
-    <script src="main.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .app-background {
+            background-image: url('https://firebasestorage.googleapis.com/v0/b/cimento-media.firebasestorage.app/o/assets%2Ffondo.png?alt=media&token=45853c56-fd52-414c-9109-46eb75cafb1d');
+            background-position: 20% center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Pantalla de compatibilidad */
+        .compatibility-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding-bottom: 50px;
+            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .compatibility-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .compatibility-content {
+            background: white;
+            padding: 0 40px 30px;
+            border-radius: 20px;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .compatibility-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .compatibility-content h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .compatibility-content p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .compatibility-list {
+            text-align: left;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .compatibility-list li {
+            list-style: none;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        /* Pantalla de introducción */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding-bottom: 40px;
+            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            z-index: 9998;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .intro-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-content {
+            background: white;
+            padding: 0 40px 30px;
+            border-radius: 20px;
+            max-width: 90%;
+            width: 450px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .intro-content h1 {
+            color: #333;
+            margin-bottom: 0;
+            font-size: 28px;
+        }
+
+        .intro-content h1 img {
+            display: block;
+        }
+
+        .intro-content .subtitle {
+            color: #667eea;
+            font-weight: 500;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+
+        .camera-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #79b0ab 0%, #0d45cd 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .permission-info {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .permission-info h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .permission-info p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Pantalla de carga */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9997;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-content h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .loading-content p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Botones */
+        .app-btn {
+            background: linear-gradient(135deg, #79b0ab 0%, #0d45cd 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .app-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .app-btn:active {
+            transform: translateY(0);
+        }
+
+        .app-btn.secondary {
+            background: #e0e0e0;
+            color: #666;
+            box-shadow: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Versión */
+        .version-text {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            z-index: 10000;
+        }
+
+        /* AR Scene */
+        a-scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Canvas de A-Frame */
+        a-scene canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Video de la cámara */
+        #arScene video {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* Instrucciones AR */
+        .ar-instructions {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 9996;
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        /* Contenedor de la escena AR */
+        #arSceneContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+    </style>
 </head>
 
 <body>
-
-    <div class="intro-screen">
-        <div class="intro-screen__wrap">
-            <!-- <div class="logo">
-                <img src="./assets/esap-cop.png" alt="ESAP COP">
-            </div>
-            <div class="bird-image">
-                <img src="./assets/img/bird.png" alt="Bird">
-            </div> -->
-            <div class="loader-wrap" style="display: flex; flex-direction: column; gap: 10px;">
-                <div class="loading__state">
-                    <div class="loader"></div>
-                    <div class="text">Cargando experiencia.<br>Por favor espera un momento</div>
-                </div>
-
-                <div id="start-button" class="app-btn hidden">
-                    Inicia la experiencia
-                </div>
-
-                <div class="version-text">1.0.0</div>
-            </div>
-        </div>
+<!-- Pantalla de compatibilidad -->
+<div id="compatibilityScreen" class="compatibility-screen app-background">
+    <div class="compatibility-content">
+        <h1><img src="assets/logo-cimento-media.svg" alt="cimento-media"></h1>
+        <!-- <h2>Dispositivo no compatible</h2> -->
+        <p>Tu dispositivo o navegador no soporta las tecnologías necesarias para esta experiencia.</p>
+        <ul class="compatibility-list">
+            <li>✓ Usa un dispositivo móvil moderno</li>
+            <li>✓ Navegadores: Chrome, Safari, Firefox</li>
+            <li>✓ Permite el acceso a la cámara</li>
+        </ul>
+        <button class="app-btn" onclick="location.reload()">Reintentar</button>
     </div>
+</div>
 
-    <a-scene mindar-image="imageTargetSrc: ./assets/mind/targets.mind; filterMinCF:0.0001; filterBeta: 0.001"
-        color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false">
-        <!-- <a-assets>
-            <audio id="ambient_sound" src="./assets/audio/audio.mp3" preload="auto"></audio>
-        </a-assets> -->
+<!-- Pantalla de introducción -->
+<div id="introScreen" class="intro-screen app-background hidden">
+    <div class="intro-content">
+        <h1><img src="./assets/logo-cimento-media.svg" alt="cimento-media"></h1>
 
-        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-        <a-entity id="entity_ambient" sound="src: #ambient_sound; loop: true"></a-entity>
+        <div class="camera-icon">📷</div>
 
-        <a-entity id="image_target" mindar-image-target="targetIndex: 0">
-            <a-entity gltf-model="./model/AN002.glb" scale="1 1 1" position="0 -0.5 0"
-                animation-mixer="clip: *;loop: repeat;"></a-entity>
-        </a-entity>
-    </a-scene>
+        <div class="permission-info">
+            <h3>Acceso a la cámara</h3>
+            <p>Para disfrutar de esta experiencia necesitamos acceso a tu cámara. Esto nos permitirá reconocer la imagen AR y mostrar el contenido.</p>
+        </div>
 
+        <button id="requestPermissionBtn" class="app-btn">Iniciar experiencia</button>
+    </div>
+</div>
+
+<!-- Pantalla de carga -->
+<div id="loadingScreen" class="loading-screen app-background hidden">
+    <div class="loading-content">
+        <div class="loader"></div>
+        <h2>Cargando experiencia</h2>
+        <p>Por favor espera un momento...</p>
+    </div>
+</div>
+
+<!-- Instrucciones AR -->
+<div id="arInstructions" class="ar-instructions hidden">
+    📷 Apunta tu cámara a la imagen
+</div>
+
+<!-- Escena AR (se creará dinámicamente después del permiso) -->
+<div id="arSceneContainer"></div>
+
+<div class="version-text">v1.2.0</div>
+
+<script>
+    // Estado de la aplicación
+    const AppState = {
+        isCompatible: false,
+        hasPermission: false,
+        isLoaded: false
+    };
+
+    // Elementos del DOM
+    const elements = {
+        compatibilityScreen: document.getElementById('compatibilityScreen'),
+        introScreen: document.getElementById('introScreen'),
+        loadingScreen: document.getElementById('loadingScreen'),
+        arInstructions: document.getElementById('arInstructions'),
+        arSceneContainer: document.getElementById('arSceneContainer'),
+        requestPermissionBtn: document.getElementById('requestPermissionBtn')
+    };
+
+    // Verificar compatibilidad del dispositivo
+    function checkCompatibility() {
+        const checks = {
+            getUserMedia: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
+            webGL: !!document.createElement('canvas').getContext('webgl'),
+            isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        };
+
+        console.log('Verificación de compatibilidad:', checks);
+
+        return checks.getUserMedia && checks.webGL;
+    }
+
+    // Inicializar aplicación
+    function initApp() {
+        console.log('Inicializando aplicación...');
+
+        // Verificar compatibilidad
+        AppState.isCompatible = checkCompatibility();
+
+        if (!AppState.isCompatible) {
+            console.error('Dispositivo no compatible');
+            elements.compatibilityScreen.classList.remove('hidden');
+            return;
+        }
+
+        // Ocultar pantalla de compatibilidad y mostrar introducción
+        elements.compatibilityScreen.classList.add('hidden');
+        elements.introScreen.classList.remove('hidden');
+
+        console.log('Dispositivo compatible. Mostrando pantalla de introducción.');
+    }
+
+    // Preparar para iniciar AR (sin solicitar permiso previo)
+    function requestCameraPermission() {
+        console.log('Preparando experiencia AR...');
+
+        elements.requestPermissionBtn.textContent = 'Iniciando...';
+        elements.requestPermissionBtn.disabled = true;
+
+        // Ocultar intro y mostrar carga
+        elements.introScreen.classList.add('hidden');
+        elements.loadingScreen.classList.remove('hidden');
+
+        // Cargar escena AR (MindAR solicitará el permiso automáticamente)
+        setTimeout(loadARScene, 500);
+    }
+
+    // Cargar escena AR (SOLO después del permiso explícito)
+    function loadARScene() {
+        console.log('Creando escena AR con cámara autorizada...');
+
+        // Crear la escena AR dinámicamente SOLO después del permiso
+        const sceneHTML = `
+                <a-scene
+                    id="arScene"
+                    mindar-image="imageTargetSrc: ./assets/mind/targets.mind; filterMinCF:0.0001; filterBeta: 0.001; autoStart: false; uiLoading: no; uiError: no; uiScanning: no; maxTrack: 1;"
+                    embedded
+                    color-space="sRGB"
+                    renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true; alpha: true;"
+                    vr-mode-ui="enabled: false"
+                    device-orientation-permission-ui="enabled: false"
+                    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+
+                    <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse"></a-camera>
+
+                    <a-entity mindar-image-target="targetIndex: 0">
+                        <a-gltf-model
+                            src="./model/AN002.glb"
+                            scale="1 1 1"
+                            position="0 -0.5 0"
+                            animation-mixer="clip: *; loop: repeat;">
+                        </a-gltf-model>
+                    </a-entity>
+                </a-scene>
+            `;
+
+        elements.arSceneContainer.innerHTML = sceneHTML;
+
+        // Obtener referencia a la escena recién creada
+        const scene = document.getElementById('arScene');
+
+        // Esperar a que la escena se cargue
+        scene.addEventListener('loaded', () => {
+            console.log('Escena AR base cargada');
+
+            // Iniciar MindAR manualmente con la nueva API
+            const arSystem = scene.systems['mindar-image-system'];
+            if (arSystem) {
+                arSystem.start()
+                console.log('MindAR iniciado correctamente');
+
+                setTimeout(() => {
+                    elements.loadingScreen.classList.add('hidden');
+                    elements.arInstructions.classList.remove('hidden');
+                    AppState.isLoaded = true;
+                    console.log('Experiencia AR activa');
+                }, 1000);
+                    /*.then(() => {
+
+                }).catch(err => {
+                    console.error('Error al iniciar MindAR:', err);
+                    alert('Error al iniciar la experiencia AR. Por favor recarga la página.');
+                });*/
+            } else {
+                console.error('Sistema MindAR no encontrado');
+                // Fallback: esperar que se inicie automáticamente
+                setTimeout(() => {
+                    elements.loadingScreen.classList.add('hidden');
+                    elements.arInstructions.classList.remove('hidden');
+                    AppState.isLoaded = true;
+                }, 2000);
+            }
+        });
+
+        // Configurar listeners de detección
+        setTimeout(() => {
+            const targets = document.querySelectorAll('[mindar-image-target]');
+            targets.forEach((target, index) => {
+                target.addEventListener('targetFound', () => {
+                    console.log(`Marcador ${index} detectado`);
+                    elements.arInstructions.textContent = '✓ Imagen detectada';
+                });
+
+                target.addEventListener('targetLost', () => {
+                    console.log(`Marcador ${index} perdido`);
+                    elements.arInstructions.textContent = '📷 Apunta tu cámara a la imagen';
+                });
+            });
+        }, 1000);
+    }
+
+    // Event Listeners
+    elements.requestPermissionBtn.addEventListener('click', requestCameraPermission);
+
+    // Iniciar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
+
+    // Prevenir zoom en dispositivos móviles
+    document.addEventListener('gesturestart', (e) => e.preventDefault());
+    document.addEventListener('touchmove', (e) => {
+        if (e.scale !== 1) e.preventDefault();
+    }, { passive: false });
+</script>
 </body>
-
 </html>
